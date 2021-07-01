@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class test {
-    static HashMap<String, ProductSpecification> ISBNDic = new HashMap<>();
+    static HashMap<String, ProductSpecification> TITLE_Dic = new HashMap<>();
     public static void main(String[] args) {
         init();
         Sale sale = new Sale();
@@ -17,18 +17,30 @@ public class test {
         while(true){
             assert cin != null;
             if (!cin.hasNext()) break;
-            String isbn = cin.next();
+            String title = cin.next();
             int copies = cin.nextInt();
-            sale.add(ISBNDic.get(isbn), copies);
+            if(!TITLE_Dic.containsKey(title)){
+                System.out.println("不存在书籍:" + title);
+            }
+            else sale.add(TITLE_Dic.get(title), copies);
         }
-        System.out.printf("%.2f\n", sale.getTotal());
+        System.out.printf("总开销为%.2f\n", sale.getTotal());
     }
     public static void init(){
-        ISBNDic.put("0001", new ProductSpecification("0001", 18, "UML与模式应用", 1));
-        ISBNDic.put("0002", new ProductSpecification("0002", 34, "Java与模式", 3));
-        ISBNDic.put("0003", new ProductSpecification("0003", 58, "HeadFirst设计模式", 3));
-        ISBNDic.put("0004", new ProductSpecification("0004", 30, "爱丽丝历险记", 2));
-        ISBNDic.put("0005", new ProductSpecification("0005", 20, "煲汤大全", 4));
+        try {
+            Scanner sc = new Scanner(new File("dic.txt"));
+            while(sc.hasNextLine()){
+                String line = sc.nextLine();
+                String[] infos = line.split(" ");
+                String ISBN = infos[0];
+                int price = Integer.parseInt(infos[1]);
+                String title = infos[2];
+                int type = Integer.parseInt(infos[3]);
+                TITLE_Dic.put(title, new ProductSpecification(ISBN, price, title, type));
 
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
